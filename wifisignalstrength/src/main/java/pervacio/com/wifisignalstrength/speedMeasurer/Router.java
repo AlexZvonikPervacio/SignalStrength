@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.List;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
+import fr.bmartel.speedtest.model.UploadStorageType;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
 
 public class Router implements ISpeedListenerFinishCallback {
@@ -19,6 +20,7 @@ public class Router implements ISpeedListenerFinishCallback {
     public Router(List<ListenerAndHandlerWrapper> listenerAndHandlers, LastListenerFinished lastListenerFinished) {
         mListenerAndHandlers = listenerAndHandlers;
         mSpeedTestSocket = new SpeedTestSocket();
+        mSpeedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
         mLastListenerFinished = lastListenerFinished;
     }
 

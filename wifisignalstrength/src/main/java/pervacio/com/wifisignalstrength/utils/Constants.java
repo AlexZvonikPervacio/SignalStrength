@@ -20,8 +20,9 @@ public class Constants {
     public static final int START = 1;
     public static final int PROGRESS = 2;
     public static final int FINISH = 3;
+    public static final int ERROR = 4;
 
-    @IntDef({START, PROGRESS, FINISH})
+    @IntDef({START, PROGRESS, FINISH, ERROR})
     @Retention(RetentionPolicy.SOURCE)
     public @interface LoadingStatus {
     }

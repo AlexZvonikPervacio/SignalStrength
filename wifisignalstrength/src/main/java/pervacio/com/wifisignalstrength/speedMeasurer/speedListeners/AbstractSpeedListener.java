@@ -6,9 +6,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.bmartel.speedtest.ISpeedTestListener;
-import fr.bmartel.speedtest.SpeedTestError;
 import fr.bmartel.speedtest.SpeedTestReport;
+import fr.bmartel.speedtest.inter.ISpeedTestListener;
+import fr.bmartel.speedtest.model.SpeedTestError;
 import pervacio.com.wifisignalstrength.speedMeasurer.ISpeedListenerFinishCallback;
 import pervacio.com.wifisignalstrength.speedMeasurer.SpeedListenerHandler;
 import pervacio.com.wifisignalstrength.speedMeasurer.StopWaiter;
@@ -96,7 +96,11 @@ public abstract class AbstractSpeedListener implements
     protected void onStop() {
 //        Log.d(TAG, "onStop() called");
         if (mHandler != null) {
-            mHandler.publish(FINISH, mList.get(mList.size() - 1));
+            if (mList.size() != 0) {
+                mHandler.publish(FINISH, mList.get(mList.size() - 1));
+            } else {
+                mHandler.publish(Constants.ERROR);
+            }
         }
         if (mOnFinish != null) {
             mOnFinish.onSpeedListenerFinish(this);

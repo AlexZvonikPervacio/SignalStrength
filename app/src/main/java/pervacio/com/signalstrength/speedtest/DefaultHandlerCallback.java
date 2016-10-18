@@ -12,6 +12,7 @@ import android.widget.TextView;
 import pervacio.com.signalstrength.R;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
 
+import static pervacio.com.wifisignalstrength.utils.Constants.ERROR;
 import static pervacio.com.wifisignalstrength.utils.Constants.FINISH;
 import static pervacio.com.wifisignalstrength.utils.Constants.PROGRESS;
 import static pervacio.com.wifisignalstrength.utils.Constants.START;
@@ -48,6 +49,12 @@ public class DefaultHandlerCallback implements Handler.Callback {
             case FINISH:
                 final Float rate = (Float) message.obj;
                 mRateText.setText(mContext.getString(R.string.rate_message, mTaskName, rate));
+                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setIndeterminate(false);
+                mRestartButton.setVisibility(View.VISIBLE);
+                break;
+            case ERROR:
+                mRateText.setText("Cannot connect to server. Pleace, retry");
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mProgressBar.setIndeterminate(false);
                 mRestartButton.setVisibility(View.VISIBLE);
