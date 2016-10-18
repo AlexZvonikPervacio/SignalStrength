@@ -6,14 +6,14 @@ import java.util.List;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
 
-public class WorkerThread extends HandlerThread {
+public class ConnectionRateTester extends HandlerThread {
 
-    public static final String TAG = WorkerThread.class.getSimpleName();
+    public static final String TAG = ConnectionRateTester.class.getSimpleName();
 
-    private List<ListenerAndHandlerWrapper> mListenerAndHandlers;
+    private List<TaskAndHandlerWrapper> mListenerAndHandlers;
     private Router.LastListenerFinished mLastListenerFinished;
 
-    public WorkerThread(List<ListenerAndHandlerWrapper> listenerAndHandlers, Router.LastListenerFinished lastListenerFinished) {
+    public ConnectionRateTester(List<TaskAndHandlerWrapper> listenerAndHandlers, Router.LastListenerFinished lastListenerFinished) {
         super(TAG);
         mListenerAndHandlers = listenerAndHandlers;
         mLastListenerFinished = lastListenerFinished;

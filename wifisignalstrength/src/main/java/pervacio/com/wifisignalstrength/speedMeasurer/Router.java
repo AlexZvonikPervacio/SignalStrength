@@ -12,12 +12,12 @@ import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpee
 
 public class Router implements ISpeedListenerFinishCallback {
 
-    private List<ListenerAndHandlerWrapper> mListenerAndHandlers;
+    private List<TaskAndHandlerWrapper> mListenerAndHandlers;
     private SpeedTestSocket mSpeedTestSocket;
     private LastListenerFinished mLastListenerFinished;
     private int mSerialNumber;
 
-    public Router(List<ListenerAndHandlerWrapper> listenerAndHandlers, LastListenerFinished lastListenerFinished) {
+    public Router(List<TaskAndHandlerWrapper> listenerAndHandlers, LastListenerFinished lastListenerFinished) {
         mListenerAndHandlers = listenerAndHandlers;
         mSpeedTestSocket = new SpeedTestSocket();
         mSpeedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
@@ -58,9 +58,9 @@ public class Router implements ISpeedListenerFinishCallback {
      */
     private void startTask(int serialNumber) {
         if (mListenerAndHandlers.size() > serialNumber) {
-            ListenerAndHandlerWrapper listenerAndHandler = mListenerAndHandlers.get(serialNumber);
+            TaskAndHandlerWrapper listenerAndHandler = mListenerAndHandlers.get(serialNumber);
 
-            WorkerThread.WorkerTask mWorkerTask = listenerAndHandler.mWorkerTask;
+            ConnectionRateTester.WorkerTask mWorkerTask = listenerAndHandler.mWorkerTask;
             Handler.Callback mCallback = listenerAndHandler.mCallback;
             SpeedListenerHandler handler = new SpeedListenerHandler(Looper.getMainLooper(), mCallback);
 

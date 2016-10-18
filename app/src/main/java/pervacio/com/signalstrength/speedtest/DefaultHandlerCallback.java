@@ -9,8 +9,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import pervacio.com.signalstrength.R;
+import pervacio.com.wifisignalstrength.R;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
+import pervacio.com.wifisignalstrength.utils.CommonUtils;
 
 import static pervacio.com.wifisignalstrength.utils.Constants.ERROR;
 import static pervacio.com.wifisignalstrength.utils.Constants.FINISH;
@@ -54,7 +55,15 @@ public class DefaultHandlerCallback implements Handler.Callback {
                 mRestartButton.setVisibility(View.VISIBLE);
                 break;
             case ERROR:
-                mRateText.setText("Cannot connect to server. Pleace, retry");
+                int messageResId;
+                if (!CommonUtils.isWifiEnabled(mContext)) {
+                    messageResId = R.string.wifi_not_connected;
+                } else if (!CommonUtils.isNetworkAvailable(mContext)) {
+                    messageResId = R.string.no_internet_connection_error;
+                } else {
+                    messageResId = R.string.default_error_messge;
+                }
+                mRateText.setText(messageResId);
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mProgressBar.setIndeterminate(false);
                 mRestartButton.setVisibility(View.VISIBLE);

@@ -18,10 +18,10 @@ import java.util.Collections;
 
 import pervacio.com.signalstrength.R;
 import pervacio.com.signalstrength.speedtest.DefaultHandlerCallback;
-import pervacio.com.wifisignalstrength.SignalMeasurer;
-import pervacio.com.wifisignalstrength.speedMeasurer.ListenerAndHandlerWrapper;
+import pervacio.com.wifisignalstrength.WifiSignalMeasurer;
+import pervacio.com.wifisignalstrength.speedMeasurer.ConnectionRateTester;
 import pervacio.com.wifisignalstrength.speedMeasurer.Router;
-import pervacio.com.wifisignalstrength.speedMeasurer.WorkerThread;
+import pervacio.com.wifisignalstrength.speedMeasurer.TaskAndHandlerWrapper;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.DownloadSpeedListener;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.UploadSpeedListener;
 
@@ -34,7 +34,8 @@ import static pervacio.com.wifisignalstrength.utils.Constants.SPEED_TEST_SERVER_
 
 public class MainContentFragment extends Fragment implements
         Router.LastListenerFinished,
-        View.OnClickListener, SignalMeasurer.WifiStrengthListener {
+        View.OnClickListener,
+        WifiSignalMeasurer.WifiStrengthListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -47,12 +48,12 @@ public class MainContentFragment extends Fragment implements
     private Button mWifiStrengthTimer;
     private Button mWifiStrengthOnRequest;
 
-    private SignalMeasurer mSignalMeasurer;
+    private WifiSignalMeasurer mSignalMeasurer;
 
     private Handler.Callback mDownloadCallback;
     private Handler.Callback mUploadCallback;
 
-    private WorkerThread.WorkerTask mDownLoadTask = (speedTestSocket, handler, onFinish) -> {
+    private ConnectionRateTester.WorkerTask mDownLoadTask = (speedTestSocket, handler, onFinish) -> {
         speedTestSocket.addSpeedTestListener(new DownloadSpeedListener(handler, onFinish));
         speedTestSocket.startFixedDownload(
                 SPEED_TEST_SERVER_HOST,
@@ -61,7 +62,7 @@ public class MainContentFragment extends Fragment implements
                 SPEED_TEST_MAX_DURATION,
                 SPEED_TEST_REPORT_INTERVAL);
     };
-    private WorkerThread.WorkerTask mUploadTask = (speedTestSocket, handler, onFinish) -> {
+    private ConnectionRateTester.WorkerTask mUploadTask = (speedTestSocket, handler, onFinish) -> {
         speedTestSocket.addSpeedTestListener(new UploadSpeedListener(handler, onFinish));
         speedTestSocket.startFixedUpload(
                 SPEED_TEST_SERVER_HOST,
@@ -106,12 +107,12 @@ public class MainContentFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         mDownloadCallback = new DefaultHandlerCallback(new DefaultHandlerCallback.ViewSet(mWifiDownloadSpeedProgress, downloadRate, restartDownload), "Download");
         mUploadCallback = new DefaultHandlerCallback(new DefaultHandlerCallback.ViewSet(mWifiUploadSpeedProgress, uploadRate, restartUpload), "Update");
-        ArrayList<ListenerAndHandlerWrapper> listenerAndHandlers = new ArrayList<>();
-        listenerAndHandlers.add(new ListenerAndHandlerWrapper(mDownLoadTask, mDownloadCallback));
-        listenerAndHandlers.add(new ListenerAndHandlerWrapper(mUploadTask, mUploadCallback));
-        WorkerThread mWorkerThread = new WorkerThread(listenerAndHandlers, this);
-        mWorkerThread.start();
-        mSignalMeasurer = new SignalMeasurer.Builder(getActivity())
+        ArrayList<TaskAndHandlerWrapper> listenerAndHandlers = new ArrayList<>();
+        listenerAndHandlers.add(new TaskAndHandlerWrapper(mDownLoadTask, mDownloadCallback));
+        listenerAndHandlers.add(new TaskAndHandlerWrapper(mUploadTask, mUploadCallback));
+        ConnectionRateTester rateTester = new ConnectionRateTester(listenerAndHandlers, this);
+        rateTester.start();
+        mSignalMeasurer = new WifiSignalMeasurer.Builder(getActivity())
                 .setWifiStrengthLevelsCount(5)
                 .setWifiUpdatePeriod(3000)
                 .setStrengthListener(this)
@@ -133,7 +134,16 @@ public class MainContentFragment extends Fragment implements
 
     @Override
     public void onStrengthUpdate(int level, int rssi) {
-        mWifiStrengthTimer.setText(getString(R.string.wifi_signal_strength, level, rssi));
+        if(getActivity() != null && isAdded()){
+            mWifiStrengthTimer.setText(getString(R.string.wifi_signal_strength, level, rssi));
+        }
+    }
+
+    @Override
+    public void onStrengthFailure(String message) {
+        if(getActivity() != null && isAdded()){
+            mWifiStrengthTimer.setText(message);
+        }
     }
 
     @Override
@@ -147,7 +157,7 @@ public class MainContentFragment extends Fragment implements
                 restartUpload.setEnabled(false);
                 restartDownload.setClickable(false);
                 restartUpload.setClickable(false);
-                new WorkerThread(Collections.singletonList(new ListenerAndHandlerWrapper(mDownLoadTask, mDownloadCallback)), this).start();
+                new ConnectionRateTester(Collections.singletonList(new TaskAndHandlerWrapper(mDownLoadTask, mDownloadCallback)), this).start();
                 break;
             case R.id.restart_upload:
                 Log.d("onClick", "onClick() called with: restart_upload");
@@ -155,12 +165,17 @@ public class MainContentFragment extends Fragment implements
                 restartUpload.setEnabled(false);
                 restartDownload.setClickable(false);
                 restartUpload.setClickable(false);
-                new WorkerThread(Collections.singletonList(new ListenerAndHandlerWrapper(mUploadTask, mUploadCallback)), this).start();
+                new ConnectionRateTester(Collections.singletonList(new TaskAndHandlerWrapper(mUploadTask, mUploadCallback)), this).start();
                 break;
             case R.id.signal_strength_on_request:
                 final int wifiStrengthLevel = mSignalMeasurer.getWifiStrengthLevel();
                 final int wifiStrengthRssi = mSignalMeasurer.getWifiStrengthRssi();
-                mWifiStrengthOnRequest.setText(getString(R.string.wifi_signal_strength, wifiStrengthLevel, wifiStrengthRssi));
+                if (wifiStrengthLevel != 0){
+                    mWifiStrengthOnRequest.setText(getString(R.string.wifi_signal_strength, wifiStrengthLevel, wifiStrengthRssi));
+                }
+                else {
+                    mWifiStrengthOnRequest.setText(R.string.wifi_not_connected);
+                }
                 break;
         }
     }

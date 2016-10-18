@@ -7,6 +7,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static pervacio.com.wifisignalstrength.utils.Constants.SPEED_TEST_REPORT_INTERVAL;
 
+/**
+ * The class performs waiting thread to stop listening connection rate callbacks after file
+ */
 public class StopWaiter extends Thread {
 
     private AtomicLong atomicLong = new AtomicLong();
@@ -23,7 +26,7 @@ public class StopWaiter extends Thread {
         long startTime = System.currentTimeMillis();
         long currentTimeMillis = System.currentTimeMillis();
         Log.w("StopWaiter$" + currentThread().getId(), "run: atomicLongGet atomic " + (atomicLongGet - startTime) + ", current = " + (currentTimeMillis - startTime) + ", diff = " + (atomicLongGet - currentTimeMillis));
-        while (Math.abs(atomicLongGet - currentTimeMillis) < SPEED_TEST_REPORT_INTERVAL * 2) {
+        while (Math.abs(atomicLongGet - currentTimeMillis) < SPEED_TEST_REPORT_INTERVAL * 1.5) {
             SystemClock.sleep(SPEED_TEST_REPORT_INTERVAL / 2);
             atomicLongGet = atomicLong.get();
             currentTimeMillis = System.currentTimeMillis();

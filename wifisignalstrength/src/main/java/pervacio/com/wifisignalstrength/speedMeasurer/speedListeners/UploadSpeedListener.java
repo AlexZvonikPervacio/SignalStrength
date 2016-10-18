@@ -25,6 +25,4 @@ public class UploadSpeedListener extends AbstractSpeedListener {
         onStop();
     }
 
-
-
 }

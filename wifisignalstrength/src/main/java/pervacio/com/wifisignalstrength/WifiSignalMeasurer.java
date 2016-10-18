@@ -7,18 +7,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import pervacio.com.wifisignalstrength.utils.ActivityUtils;
+import pervacio.com.wifisignalstrength.utils.CommonUtils;
 
-public class SignalMeasurer {
+public class WifiSignalMeasurer {
 
-    //in constr req
     private Context mContext;
-
-    //in constr req
     private int wifiStrengthLevelsCount = 5;
     private int wifiUpdatePeriod = 5000;
     private WifiStrengthListener mStrengthListener;
 
-    public SignalMeasurer(Context mContext, int wifiStrengthLevelsCount, int wifiUpdatePeriod, WifiStrengthListener mStrengthListener) {
+    public WifiSignalMeasurer(Context mContext, int wifiStrengthLevelsCount, int wifiUpdatePeriod, WifiStrengthListener mStrengthListener) {
         this.mContext = mContext;
         this.wifiStrengthLevelsCount = wifiStrengthLevelsCount;
         this.wifiUpdatePeriod = wifiUpdatePeriod;
@@ -52,13 +50,21 @@ public class SignalMeasurer {
                     @Override
                     public void run() {
                         if (listener != null) {
-                            listener.onStrengthUpdate(level, rssi);
+                            if (level == 0 && !CommonUtils.isNetworkAvailable(mContext)) {
+                                listener.onStrengthFailure(mContext.getString(R.string.no_internet_connection));
+                            }
+                            else if (!CommonUtils.isWifiEnabled(mContext)) {
+                                listener.onStrengthFailure(mContext.getString(R.string.wifi_not_connected));
+                            }
+                            else {
+                                listener.onStrengthUpdate(level, rssi);
+                            }
                         }
                     }
                 });
             }
         };
-        if (wifiUpdatePeriod < 100){
+        if (wifiUpdatePeriod < 100) {
             wifiUpdatePeriod = 100;
         }
         timer.schedule(task, 0, updatePeriod);
@@ -66,6 +72,8 @@ public class SignalMeasurer {
 
     public interface WifiStrengthListener {
         void onStrengthUpdate(int level, int rssi);
+
+        void onStrengthFailure(String message);
     }
 
     public static class Builder {
@@ -73,7 +81,7 @@ public class SignalMeasurer {
         private Context mContext;
         private int mWifiStrengthLevelsCount;
         private int mWifiUpdatePeriod;
-        private SignalMeasurer.WifiStrengthListener mStrengthListener;
+        private WifiSignalMeasurer.WifiStrengthListener mStrengthListener;
 
         public Builder(Context mContext) {
             this.mContext = mContext;
@@ -94,13 +102,13 @@ public class SignalMeasurer {
             return this;
         }
 
-        public Builder setStrengthListener(SignalMeasurer.WifiStrengthListener mStrengthListener) {
+        public Builder setStrengthListener(WifiSignalMeasurer.WifiStrengthListener mStrengthListener) {
             this.mStrengthListener = mStrengthListener;
             return this;
         }
 
-        public SignalMeasurer create() {
-            return new SignalMeasurer(mContext, mWifiStrengthLevelsCount, mWifiUpdatePeriod, mStrengthListener);
+        public WifiSignalMeasurer create() {
+            return new WifiSignalMeasurer(mContext, mWifiStrengthLevelsCount, mWifiUpdatePeriod, mStrengthListener);
         }
     }
 
