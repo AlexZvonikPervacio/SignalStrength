@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer-array name="tab_icons">
+        <item>@drawable/ic_network_cell_black_24dp</item>
+        <item>@drawable/ic_network_wifi_black_24dp</item>
+    </integer-array>
+
+</resources>
