@@ -73,9 +73,18 @@ public class MainContentFragment extends Fragment implements
                 SPEED_TEST_REPORT_INTERVAL);
     };
 
+    /**
+     * Instantiates a new Main content fragment.
+     */
     public MainContentFragment() {
     }
 
+    /**
+     * New instance main content fragment.
+     *
+     * @param sectionNumber the section number
+     * @return the main content fragment
+     */
     public static MainContentFragment newInstance(int sectionNumber) {
         MainContentFragment fragment = new MainContentFragment();
         Bundle args = new Bundle();
@@ -111,7 +120,7 @@ public class MainContentFragment extends Fragment implements
         listenerAndHandlers.add(new TaskAndHandlerWrapper(mDownLoadTask, mDownloadCallback));
         listenerAndHandlers.add(new TaskAndHandlerWrapper(mUploadTask, mUploadCallback));
         ConnectionRateTester rateTester = new ConnectionRateTester(listenerAndHandlers, this);
-        rateTester.start();
+        rateTester.startRateMeasurements();
         mSignalMeasurer = new WifiSignalMeasurer.Builder(getActivity())
                 .setWifiStrengthLevelsCount(5)
                 .setWifiUpdatePeriod(3000)
@@ -123,11 +132,7 @@ public class MainContentFragment extends Fragment implements
     @Override
     public void onLastTaskCompleted() {
         Log.d("onLastTaskCompleted", "onLastTaskCompleted() called");
-        restartDownload.setEnabled(true);
-        restartUpload.setEnabled(true);
-        restartDownload.setClickable(true);
-        restartUpload.setClickable(true);
-
+        enableRestartButtons(true);
         restartDownload.setImageResource(R.drawable.ic_replay_accent_48dp);
         restartUpload.setImageResource(R.drawable.ic_replay_accent_48dp);
     }
@@ -148,24 +153,14 @@ public class MainContentFragment extends Fragment implements
 
     @Override
     public void onClick(View view) {
-        Log.d("onClick", "onClick() called " + restartDownload.getVisibility() + " " + restartDownload.isClickable() +
-                " " + restartDownload.isEnabled() + "\n" +
-                " ==  " + (view.getId() == R.id.restart_download));
         switch (view.getId()) {
             case R.id.restart_download:
-                restartDownload.setEnabled(false);
-                restartUpload.setEnabled(false);
-                restartDownload.setClickable(false);
-                restartUpload.setClickable(false);
-                new ConnectionRateTester(Collections.singletonList(new TaskAndHandlerWrapper(mDownLoadTask, mDownloadCallback)), this).start();
+                enableRestartButtons(false);
+                new ConnectionRateTester(Collections.singletonList(new TaskAndHandlerWrapper(mDownLoadTask, mDownloadCallback)), this).startRateMeasurements();
                 break;
             case R.id.restart_upload:
-                Log.d("onClick", "onClick() called with: restart_upload");
-                restartDownload.setEnabled(false);
-                restartUpload.setEnabled(false);
-                restartDownload.setClickable(false);
-                restartUpload.setClickable(false);
-                new ConnectionRateTester(Collections.singletonList(new TaskAndHandlerWrapper(mUploadTask, mUploadCallback)), this).start();
+                enableRestartButtons(false);
+                new ConnectionRateTester(Collections.singletonList(new TaskAndHandlerWrapper(mUploadTask, mUploadCallback)), this).startRateMeasurements();
                 break;
             case R.id.signal_strength_on_request:
                 final int wifiStrengthLevel = mSignalMeasurer.getWifiStrengthLevel();
@@ -178,6 +173,18 @@ public class MainContentFragment extends Fragment implements
                 }
                 break;
         }
+    }
+
+    /**
+     * Disable buttons to prevent parallel measurements
+     *
+     * @param enable state flag
+     */
+    private void enableRestartButtons(boolean enable) {
+        restartDownload.setEnabled(enable);
+        restartUpload.setEnabled(enable);
+        restartDownload.setClickable(enable);
+        restartUpload.setClickable(enable);
     }
 
 }

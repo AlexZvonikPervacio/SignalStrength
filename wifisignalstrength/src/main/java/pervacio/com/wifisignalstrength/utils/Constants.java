@@ -7,8 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public class Constants {
 
-    public static final String TAG = "speedtest";
-
     public static final String SPEED_TEST_SERVER_HOST = "2.testdebit.info";
     public static final int SPEED_TEST_SERVER_PORT = 80;
     public static final String SPEED_TEST_SERVER_URI_DL = "/fichiers/1000Mo.dat";

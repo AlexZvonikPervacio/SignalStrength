@@ -1,7 +1,6 @@
 package pervacio.com.wifisignalstrength.speedMeasurer;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,12 +24,10 @@ public class StopWaiter extends Thread {
         long atomicLongGet = atomicLong.get();
         long startTime = System.currentTimeMillis();
         long currentTimeMillis = System.currentTimeMillis();
-        Log.w("StopWaiter$" + currentThread().getId(), "run: atomicLongGet atomic " + (atomicLongGet - startTime) + ", current = " + (currentTimeMillis - startTime) + ", diff = " + (atomicLongGet - currentTimeMillis));
         while (Math.abs(atomicLongGet - currentTimeMillis) < SPEED_TEST_REPORT_INTERVAL * 1.5) {
             SystemClock.sleep(SPEED_TEST_REPORT_INTERVAL / 2);
             atomicLongGet = atomicLong.get();
             currentTimeMillis = System.currentTimeMillis();
-            Log.w("StopWaiter$" + currentThread().getId(), "run: atomicLongGet atomic " + (atomicLongGet - startTime) + ", current = " + (currentTimeMillis - startTime) + ", diff = " + (atomicLongGet - currentTimeMillis));
         }
         if (mOnTimerStop != null) {
             mOnTimerStop.onTimerStop();

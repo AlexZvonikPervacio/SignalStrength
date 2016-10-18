@@ -8,7 +8,7 @@ import fr.bmartel.speedtest.SpeedTestSocket;
 
 public class ConnectionRateTester extends HandlerThread {
 
-    public static final String TAG = ConnectionRateTester.class.getSimpleName();
+    private static final String TAG = ConnectionRateTester.class.getSimpleName();
 
     private List<TaskAndHandlerWrapper> mListenerAndHandlers;
     private Router.LastListenerFinished mLastListenerFinished;
@@ -24,6 +24,16 @@ public class ConnectionRateTester extends HandlerThread {
         super.onLooperPrepared();
         Router router = new Router(mListenerAndHandlers, mLastListenerFinished);
         router.route();
+    }
+
+    public void startRateMeasurements(){
+        super.start();
+    }
+
+    @Override
+    @Deprecated
+    public synchronized void start() {
+        super.start();
     }
 
     public interface WorkerTask {

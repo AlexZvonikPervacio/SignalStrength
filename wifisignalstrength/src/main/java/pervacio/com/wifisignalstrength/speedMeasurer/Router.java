@@ -10,6 +10,9 @@ import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.model.UploadStorageType;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
 
+/**
+ * The type Router.
+ */
 public class Router implements ISpeedListenerFinishCallback {
 
     private List<TaskAndHandlerWrapper> mListenerAndHandlers;
@@ -17,7 +20,7 @@ public class Router implements ISpeedListenerFinishCallback {
     private LastListenerFinished mLastListenerFinished;
     private int mSerialNumber;
 
-    public Router(List<TaskAndHandlerWrapper> listenerAndHandlers, LastListenerFinished lastListenerFinished) {
+    Router(List<TaskAndHandlerWrapper> listenerAndHandlers, LastListenerFinished lastListenerFinished) {
         mListenerAndHandlers = listenerAndHandlers;
         mSpeedTestSocket = new SpeedTestSocket();
         mSpeedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
@@ -47,7 +50,10 @@ public class Router implements ISpeedListenerFinishCallback {
         }
     }
 
-    public void route() {
+    /**
+     * Start from the first task
+     */
+    void route() {
         startTask(mSerialNumber++);
     }
 
