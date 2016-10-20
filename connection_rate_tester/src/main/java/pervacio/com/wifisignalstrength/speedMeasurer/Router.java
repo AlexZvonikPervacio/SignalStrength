@@ -8,10 +8,11 @@ import java.util.List;
 
 import fr.bmartel.speedtest.SpeedTestSocket;
 import fr.bmartel.speedtest.model.UploadStorageType;
+import pervacio.com.wifisignalstrength.speedMeasurer.actions.WorkerTask;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
 
 /**
- * The type Router.
+ * The type Router used to configure one by one execution listening callbacks.
  */
 public class Router implements ISpeedListenerFinishCallback {
 
@@ -20,6 +21,12 @@ public class Router implements ISpeedListenerFinishCallback {
     private LastListenerFinished mLastListenerFinished;
     private int mSerialNumber;
 
+    /**
+     * Instantiates a new Router.
+     *
+     * @param listenerAndHandlers  the listener and handlers
+     * @param lastListenerFinished the last listener finished
+     */
     Router(List<TaskAndHandlerWrapper> listenerAndHandlers, LastListenerFinished lastListenerFinished) {
         mListenerAndHandlers = listenerAndHandlers;
         mSpeedTestSocket = new SpeedTestSocket();
@@ -66,14 +73,17 @@ public class Router implements ISpeedListenerFinishCallback {
         if (mListenerAndHandlers.size() > serialNumber) {
             TaskAndHandlerWrapper listenerAndHandler = mListenerAndHandlers.get(serialNumber);
 
-            ConnectionRateTester.WorkerTask mWorkerTask = listenerAndHandler.mWorkerTask;
+            WorkerTask mWorkerTask = listenerAndHandler.mWorkerTask;
             Handler.Callback mCallback = listenerAndHandler.mCallback;
-            SpeedListenerHandler handler = new SpeedListenerHandler(Looper.getMainLooper(), mCallback);
+            SpeedListenerHandler handler = new SpeedListenerHandler(mCallback);
 
             mWorkerTask.execute(mSpeedTestSocket, handler, this);
         }
     }
 
+    /**
+     * The interface LastListenerFinishedFinished used to indicate last task completed.
+     */
     public interface LastListenerFinished {
         void onLastTaskCompleted();
     }

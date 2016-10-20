@@ -1,6 +1,5 @@
 package pervacio.com.wifisignalstrength.speedMeasurer.speedListeners;
 
-import android.os.Message;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -16,6 +15,11 @@ import pervacio.com.wifisignalstrength.utils.Constants;
 
 import static pervacio.com.wifisignalstrength.utils.Constants.FINISH;
 
+
+/**
+ * The class uses to handle {@link fr.bmartel.speedtest.inter.ISpeedTestListener} callbacks
+ * feeded to {@link fr.bmartel.speedtest.SpeedTestSocket}.
+ */
 public abstract class AbstractSpeedListener implements
         ISpeedTestListener,
         StopWaiter.OnTimerStop {
@@ -49,7 +53,7 @@ public abstract class AbstractSpeedListener implements
 
     @Override
     public void onUploadFinished(SpeedTestReport report) {
-        Log.d(TAG, "onUploadFinished() called with: report = [" + report + "]");
+
     }
 
     @Override
@@ -70,8 +74,13 @@ public abstract class AbstractSpeedListener implements
         onStop();
     }
 
+
+    /**
+     * Method publish onStop state to the handler.
+     *
+     * @param report the {@link SpeedTestReport} report returns form {@link fr.bmartel.speedtest.inter.ISpeedTestListener}
+     */
     protected void onUpdate(SpeedTestReport report) {
-        Log.d(TAG, "onUpdate() called with: report = [" + report.getTransferRateBit().floatValue() / 1024 / 1024 + "]" + report.getProgressPercent());
         if (mHandler == null) {
             return;
         }
@@ -80,7 +89,6 @@ public abstract class AbstractSpeedListener implements
             mHandler.publish(Constants.START);
             mStopWaiter.start();
         } else if (report.getProgressPercent() == 100) {
-            Log.d(TAG, "report.getProgressPercent() == 100 onStop() called");
             onStop();
         } else {
             float rate = report.getTransferRateBit().floatValue() / 1024 / 1024;
@@ -93,8 +101,10 @@ public abstract class AbstractSpeedListener implements
         }
     }
 
+    /**
+     * Method publish onStop state to the handler.
+     */
     protected void onStop() {
-//        Log.d(TAG, "onStop() called");
         if (mHandler != null) {
             if (mList.size() != 0) {
                 mHandler.publish(FINISH, mList.get(mList.size() - 1));
@@ -107,18 +117,9 @@ public abstract class AbstractSpeedListener implements
         }
     }
 
-    protected void publish(@Constants.LoadingStatus int loadingStatus, int value) {
-        publish(loadingStatus, value, null);
-    }
-
-    protected void publish(@Constants.LoadingStatus int loadingStatus, int value, Object object) {
-        Message message = new Message();
-        message.arg1 = loadingStatus;
-        message.arg2 = value;
-        message.obj = object;
-        mHandler.sendMessage(message);
-    }
-
+    /**
+     * The type uses to wrap progress state to transfer to the handler
+     */
     public static class PublishProgress {
 
         public int progress;

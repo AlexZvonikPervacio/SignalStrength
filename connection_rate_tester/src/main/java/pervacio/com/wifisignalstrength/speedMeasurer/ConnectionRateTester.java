@@ -4,8 +4,9 @@ import android.os.HandlerThread;
 
 import java.util.List;
 
-import fr.bmartel.speedtest.SpeedTestSocket;
-
+/**
+ * The type ConnectionRateTester is a worker thread uses to execute connection test tasks.
+ */
 public class ConnectionRateTester extends HandlerThread {
 
     private static final String TAG = ConnectionRateTester.class.getSimpleName();
@@ -19,6 +20,9 @@ public class ConnectionRateTester extends HandlerThread {
         mLastListenerFinished = lastListenerFinished;
     }
 
+    /**
+     * Router object creates in @link{(ConnectionRateTester.onLooperPrepared())}.
+     */
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
@@ -34,10 +38,6 @@ public class ConnectionRateTester extends HandlerThread {
     @Deprecated
     public synchronized void start() {
         super.start();
-    }
-
-    public interface WorkerTask {
-        void execute(SpeedTestSocket speedTestSocket, SpeedListenerHandler handler, ISpeedListenerFinishCallback onFinish);
     }
 
 }

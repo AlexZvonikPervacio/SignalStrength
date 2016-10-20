@@ -1,13 +1,17 @@
-package pervacio.com.signalstrength.speedtest;
+package pervacio.com.wifisignalstrength.speedMeasurer;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import pervacio.com.wifisignalstrength.R;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
@@ -18,7 +22,10 @@ import static pervacio.com.wifisignalstrength.utils.Constants.FINISH;
 import static pervacio.com.wifisignalstrength.utils.Constants.PROGRESS;
 import static pervacio.com.wifisignalstrength.utils.Constants.START;
 
-public class DefaultHandlerCallback implements Handler.Callback {
+public abstract class DefaultHandlerCallback implements Handler.Callback {
+
+    public static final int WIFI = 1;
+    public static final int MOBILE = 2;
 
     private ProgressBar mProgressBar;
     private TextView mRateText;
@@ -26,8 +33,15 @@ public class DefaultHandlerCallback implements Handler.Callback {
 
     private String mTaskName;
     private Context mContext;
+    @TargetConnectionType
+    private int mConnectionType;
 
-    public DefaultHandlerCallback(ViewSet viewSet, String taskName) {
+    public DefaultHandlerCallback(ViewSet viewSet, String taskName, @TargetConnectionType int connectionType) {
+        this(viewSet, taskName);
+        mConnectionType = connectionType;
+    }
+
+    private DefaultHandlerCallback(ViewSet viewSet, String taskName) {
         mContext = viewSet.mProgressBar.getContext();
         mProgressBar = viewSet.mProgressBar;
         mRateText = viewSet.mRateText;
@@ -56,12 +70,14 @@ public class DefaultHandlerCallback implements Handler.Callback {
                 break;
             case ERROR:
                 int messageResId;
-                if (!CommonUtils.isWifiEnabled(mContext)) {
+                if (!CommonUtils.isNetworkAvailable(mContext)) {
+                    messageResId = R.string.no_internet_connection;
+                } else if (WIFI == mConnectionType && CommonUtils.isWifiEnabled(mContext)) {
                     messageResId = R.string.wifi_not_connected;
-                } else if (!CommonUtils.isNetworkAvailable(mContext)) {
-                    messageResId = R.string.no_internet_connection_error;
+                } else if (MOBILE == mConnectionType && CommonUtils.isMobileNetworkEnabled(mContext)) {
+                    messageResId = R.string.wifi_not_connected;
                 } else {
-                    messageResId = R.string.default_error_messge;
+                    messageResId = R.string.default_error_message;
                 }
                 mRateText.setText(messageResId);
                 mProgressBar.setVisibility(View.INVISIBLE);
@@ -70,6 +86,12 @@ public class DefaultHandlerCallback implements Handler.Callback {
                 break;
         }
         return true;
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({WIFI, MOBILE})
+    protected @interface TargetConnectionType {
+
     }
 
     public static class ViewSet {

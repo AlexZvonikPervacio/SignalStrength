@@ -1,14 +1,13 @@
 package pervacio.com.wifisignalstrength.speedMeasurer.speedListeners;
 
-import android.util.Log;
-
 import fr.bmartel.speedtest.SpeedTestReport;
 import pervacio.com.wifisignalstrength.speedMeasurer.ISpeedListenerFinishCallback;
 import pervacio.com.wifisignalstrength.speedMeasurer.SpeedListenerHandler;
 
+/**
+ * The concrete realization to observe upload callbacks.
+ */
 public class UploadSpeedListener extends AbstractSpeedListener {
-
-    protected static final String TAG = "[" + UploadSpeedListener.class.getSimpleName() + "]";
 
     public UploadSpeedListener(SpeedListenerHandler handler, ISpeedListenerFinishCallback mOnFinish) {
         super(handler, mOnFinish);
@@ -21,7 +20,6 @@ public class UploadSpeedListener extends AbstractSpeedListener {
 
     @Override
     public void onUploadFinished(SpeedTestReport report) {
-        Log.d(TAG, "onUploadFinished onStop() called");
         onStop();
     }
 

@@ -1,1 +1,1 @@
-include ':app', ':signalmeasurer', ':wifisignalstrength'
+include ':app', ':signalmeasurer', ':connection_rate_tester'
