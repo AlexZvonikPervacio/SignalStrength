@@ -30,8 +30,6 @@ public class MainContentFragment extends Fragment implements
         View.OnClickListener,
         WifiSignalMeasurer.WifiStrengthListener {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
     private ProgressBar mWifiDownloadSpeedProgress;
     private ProgressBar mWifiUploadSpeedProgress;
     private TextView downloadRate;
