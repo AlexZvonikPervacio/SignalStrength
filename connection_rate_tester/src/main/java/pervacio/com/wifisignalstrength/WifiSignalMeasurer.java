@@ -58,13 +58,14 @@ public class WifiSignalMeasurer {
                 public void run() {
                     final int rssi = mWifiManager.getConnectionInfo().getRssi();
                     final int level = WifiManager.calculateSignalLevel(rssi, mWifiStrengthLevelsCount);
+                    final boolean hasInternetAccess = CommonUtils.hasInternetAccess(mContext);
                     ActivityUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
                             if (mStrengthListener != null) {
-                                if (level == 0 && !CommonUtils.isNetworkAvailable(mContext)) {
+                                if (level == 0 || !hasInternetAccess) {
                                     mStrengthListener.onStrengthFailure(mContext.getString(R.string.no_internet_connection));
-                                } else if (!CommonUtils.isWifiEnabled(mContext)) {
+                                } else if (CommonUtils.typeConnection(mContext) != CommonUtils.WIFI) {
                                     mStrengthListener.onStrengthFailure(mContext.getString(R.string.wifi_not_connected));
                                 } else {
                                     mStrengthListener.onStrengthUpdate(level, rssi);

@@ -24,8 +24,8 @@ import static pervacio.com.wifisignalstrength.utils.Constants.START;
 
 public abstract class DefaultHandlerCallback implements Handler.Callback {
 
-    public static final int WIFI = 1;
-    public static final int MOBILE = 2;
+   protected static final int WIFI = CommonUtils.WIFI;
+   protected static final int MOBILE = CommonUtils.MOBILE;
 
     private ProgressBar mProgressBar;
     private TextView mRateText;
@@ -70,12 +70,12 @@ public abstract class DefaultHandlerCallback implements Handler.Callback {
                 break;
             case ERROR:
                 int messageResId;
-                if (!CommonUtils.isNetworkAvailable(mContext)) {
+                if (!CommonUtils.hasInternetAccess(mContext)) {
                     messageResId = R.string.no_internet_connection;
-                } else if (WIFI == mConnectionType && CommonUtils.isWifiEnabled(mContext)) {
+                } else if (WIFI == mConnectionType && CommonUtils.typeConnection(mContext) != WIFI) {
                     messageResId = R.string.wifi_not_connected;
-                } else if (MOBILE == mConnectionType && CommonUtils.isMobileNetworkEnabled(mContext)) {
-                    messageResId = R.string.wifi_not_connected;
+                } else if (MOBILE == mConnectionType && CommonUtils.typeConnection(mContext) != MOBILE) {
+                    messageResId = R.string.mobile_internet_not_connected;
                 } else {
                     messageResId = R.string.default_error_message;
                 }
