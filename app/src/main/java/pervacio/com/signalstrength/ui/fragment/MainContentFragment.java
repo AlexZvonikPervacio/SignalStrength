@@ -12,12 +12,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.mobilesignalstrengthmeasurer.WifiSignalMeasurer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 import pervacio.com.signalstrength.R;
 import pervacio.com.signalstrength.speedtest.SimpleWifiHandlerCallback;
-import pervacio.com.wifisignalstrength.WifiSignalMeasurer;
 import pervacio.com.wifisignalstrength.speedMeasurer.ConnectionRateTester;
 import pervacio.com.wifisignalstrength.speedMeasurer.DefaultHandlerCallback;
 import pervacio.com.wifisignalstrength.speedMeasurer.Router;

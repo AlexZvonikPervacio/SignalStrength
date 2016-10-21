@@ -1,4 +1,4 @@
-package pervacio.com.signalmeasurer;
+package com.example.mobilesignalstrengthmeasurer;
 
 import org.junit.Test;
 

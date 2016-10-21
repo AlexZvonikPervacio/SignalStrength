@@ -1,4 +1,4 @@
-package pervacio.com.wifisignalstrength;
+package com.example.mobilesignalstrengthmeasurer;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -6,9 +6,6 @@ import android.support.annotation.IntRange;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import pervacio.com.wifisignalstrength.utils.ActivityUtils;
-import pervacio.com.wifisignalstrength.utils.CommonUtils;
 
 public class WifiSignalMeasurer {
 

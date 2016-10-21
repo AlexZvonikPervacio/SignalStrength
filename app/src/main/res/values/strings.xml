@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Signal Strength</string>
+    <string name="app_name">Wifi signal strength</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main_pager">MainPagerActivity</string>
     <string name="wifi_signal_strength">Wifi signal strength : level - %1$d, rssi - %2$d</string>

@@ -35,11 +35,9 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
-    compile project(path: ':signalmeasurer')
-    compile project(path: ':connection_rate_tester')
-
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
 
-    compile 'com.google.code.gson:gson:2.7'
+    compile project(path: ':connection_rate_tester')
+    compile project(path: ':wifi_signal_strength_measurer')
 }

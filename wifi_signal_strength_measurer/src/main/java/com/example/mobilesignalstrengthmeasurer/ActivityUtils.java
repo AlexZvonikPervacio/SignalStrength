@@ -1,4 +1,4 @@
-package pervacio.com.wifisignalstrength.utils;
+package com.example.mobilesignalstrengthmeasurer;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -7,16 +7,6 @@ public class ActivityUtils {
 
     private static void scheduleOnMainThread(Runnable r) {
         new Handler(Looper.getMainLooper()).post(r);
-    }
-
-    /**
-     * Method uses to schedule tasks on main thread.
-     *
-     * @param r     the runnable scheduled to execute in the main thread
-     * @param delay the delay
-     */
-    public static void scheduleOnMainThread(Runnable r, long delay) {
-        new Handler(Looper.getMainLooper()).postDelayed(r, delay);
     }
 
     /**

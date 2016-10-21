@@ -17,6 +17,8 @@ import pervacio.com.wifisignalstrength.R;
 import pervacio.com.wifisignalstrength.speedMeasurer.speedListeners.AbstractSpeedListener;
 import pervacio.com.wifisignalstrength.utils.CommonUtils;
 
+import static pervacio.com.wifisignalstrength.utils.CommonUtils.MOBILE;
+import static pervacio.com.wifisignalstrength.utils.CommonUtils.WIFI;
 import static pervacio.com.wifisignalstrength.utils.Constants.ERROR;
 import static pervacio.com.wifisignalstrength.utils.Constants.FINISH;
 import static pervacio.com.wifisignalstrength.utils.Constants.PROGRESS;
